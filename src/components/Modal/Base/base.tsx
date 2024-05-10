@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { createPortal } from "react-dom";
 import styles from "./modal.base.styles.module.css";
 import clsx from "clsx";
@@ -15,11 +15,19 @@ export interface IModalProps {
 const Modal: React.FC<IModalProps> = (props) => {
   const { isOpen, nodeId = "modal", ...rest } = props;
 
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflowY = "hidden";
+    }
+
+    return () => {
+      document.body.style.overflowY = "initial";
+    };
+  }, [isOpen]);
+
   if (!isOpen) {
     return null;
   }
-
-  document.body.style.overflowY = "hidden";
 
   return createPortal(
     <ModalChildren {...rest} />,
